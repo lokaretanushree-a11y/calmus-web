@@ -1,19 +1,20 @@
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "demo-key",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "calmus-cb823.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "calmus-cb823",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "calmus-cb823.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "417612821598",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:417612821598:web:44a473883b928b6d4170cf",
-  measurementId: "G-VHPRQPZY14"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: "calmus-cb823.firebaseapp.com",
+  projectId: "calmus-cb823",
+  storageBucket: "calmus-cb823.firebasestorage.app",
+  messagingSenderId: "417612821598",
+  appId: "1:417612821598:web:080d634b656807354170cf",
+  measurementId: "G-FBJMTCRCP2",
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+
+export default app;

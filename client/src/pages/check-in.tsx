@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
-import { useAnalyzeSentiment, useSaveMood } from "@/hooks/use-moods";
+import { useSaveMood } from "@/hooks/use-moods";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
@@ -13,33 +13,52 @@ export default function CheckIn() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-  
-  const analyzeMutation = useAnalyzeSentiment();
+
   const saveMoodMutation = useSaveMood();
 
-  const isPending = analyzeMutation.isPending || saveMoodMutation.isPending;
+  const [isPending, setIsPending] = useState(false);
 
   const handleSubmit = async () => {
     if (!text.trim() || !user) return;
 
     try {
-      // 1. Analyze Sentiment
-      const analysis = await analyzeMutation.mutateAsync({ text });
-      
-      // 2. Save to Firestore
+      setIsPending(true);
+
+      // --- MOCK AI SENTIMENT ANALYSIS ---
+      let emotion = "Neutral";
+      let sentimentScore = 0.5;
+      let magnitude = 0.7;
+
+      const lowerText = text.toLowerCase();
+      if (lowerText.includes("stress") || lowerText.includes("tired")) {
+        emotion = "Stressed";
+        sentimentScore = 0.2;
+      } else if (lowerText.includes("happy") || lowerText.includes("good")) {
+        emotion = "Happy";
+        sentimentScore = 0.9;
+      } else if (lowerText.includes("calm") || lowerText.includes("relaxed")) {
+        emotion = "Calm";
+        sentimentScore = 0.8;
+      }
+
+      // simulate processing delay
+      await new Promise((res) => setTimeout(res, 1000));
+
+      // --- SAVE TO FIRESTORE ---
       await saveMoodMutation.mutateAsync({
         userId: user.uid,
         text,
-        sentimentScore: analysis.score,
-        sentimentMagnitude: analysis.magnitude,
-        emotionCategory: analysis.emotion,
+        sentimentScore,
+        sentimentMagnitude: magnitude,
+        emotionCategory: emotion,
       });
 
       toast({
         title: "Check-in complete",
-        description: `You seem to be feeling ${analysis.emotion.toLowerCase()}.`,
+        description: `You seem to be feeling ${emotion.toLowerCase()}.`,
       });
 
+      setText(""); // clear input
       setLocation("/dashboard");
     } catch (error) {
       toast({
@@ -47,6 +66,8 @@ export default function CheckIn() {
         title: "Error",
         description: "Failed to process your check-in. Please try again.",
       });
+    } finally {
+      setIsPending(false);
     }
   };
 
@@ -70,18 +91,22 @@ export default function CheckIn() {
               disabled={isPending}
             />
           </div>
-          
+
           <div className="bg-slate-50/50 p-4 flex justify-between items-center border-t">
             <Button variant="ghost" size="icon" disabled>
               <Mic className="w-5 h-5 text-muted-foreground" />
             </Button>
-            
+
             <div className="flex gap-3">
-              <Button variant="ghost" onClick={() => setLocation("/dashboard")} disabled={isPending}>
+              <Button
+                variant="ghost"
+                onClick={() => setLocation("/dashboard")}
+                disabled={isPending}
+              >
                 Cancel
               </Button>
-              <Button 
-                onClick={handleSubmit} 
+              <Button
+                onClick={handleSubmit}
                 disabled={!text.trim() || isPending}
                 className="rounded-full px-6"
               >
@@ -98,28 +123,38 @@ export default function CheckIn() {
       </Card>
 
       <div className="grid grid-cols-2 gap-4">
-        <PromptCard 
-          emoji="🎯" 
-          text="What's one goal you accomplished today?" 
-          onClick={(t) => setText(t)} 
+        <PromptCard
+          emoji="🎯"
+          text="What's one goal you accomplished today?"
+          onClick={(t) => setText(t)}
         />
-        <PromptCard 
-          emoji="🌟" 
-          text="What are you grateful for right now?" 
-          onClick={(t) => setText(t)} 
+        <PromptCard
+          emoji="🌟"
+          text="What are you grateful for right now?"
+          onClick={(t) => setText(t)}
         />
       </div>
     </div>
   );
 }
 
-function PromptCard({ emoji, text, onClick }: { emoji: string, text: string, onClick: (t: string) => void }) {
+function PromptCard({
+  emoji,
+  text,
+  onClick,
+}: {
+  emoji: string;
+  text: string;
+  onClick: (t: string) => void;
+}) {
   return (
-    <button 
+    <button
       onClick={() => onClick(text + " ")}
       className="text-left p-4 rounded-xl bg-white border hover:border-primary/50 hover:shadow-md transition-all group"
     >
-      <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">{emoji}</div>
+      <div className="text-2xl mb-2 group-hover:scale-110 transition-transform">
+        {emoji}
+      </div>
       <div className="text-sm font-medium text-muted-foreground group-hover:text-foreground">
         {text}
       </div>

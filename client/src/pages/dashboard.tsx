@@ -1,26 +1,27 @@
 import { useAuth } from "@/hooks/use-auth";
+import { Activity } from "lucide-react";
 import { useMoodHistory } from "@/hooks/use-moods";
 import { Link } from "wouter";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { EmotionBadge } from "@/components/emotion-badge";
 import { format } from "date-fns";
-import { 
-  Plus, 
-  BookOpen, 
-  Phone, 
-  Users, 
+import {
+  Plus,
+  BookOpen,
+  Phone,
+  Users,
   ChevronRight,
-  TrendingUp
+  TrendingUp,
 } from "lucide-react";
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  Tooltip, 
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  Tooltip,
   ResponsiveContainer,
-  CartesianGrid 
+  CartesianGrid,
 } from "recharts";
 
 export default function Dashboard() {
@@ -28,11 +29,14 @@ export default function Dashboard() {
   const { data: moods, isLoading } = useMoodHistory(user?.uid);
 
   // Prepare chart data (last 7 entries reversed for chronological order)
-  const chartData = moods?.slice(0, 7).reverse().map(m => ({
-    date: format(m.createdAt as Date, 'MMM d'),
-    score: m.sentimentScore,
-    emotion: m.emotionCategory
-  }));
+  const chartData = moods
+    ?.slice(0, 7)
+    .reverse()
+    .map((m) => ({
+      date: format(m.createdAt as Date, "MMM d"),
+      score: m.sentimentScore,
+      emotion: m.emotionCategory,
+    }));
 
   return (
     <div className="space-y-8">
@@ -40,14 +44,17 @@ export default function Dashboard() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold font-display text-foreground">
-            Welcome back, {user?.displayName?.split(' ')[0] || 'Friend'}
+            Welcome back, {user?.displayName?.split(" ")[0] || "Friend"}
           </h1>
           <p className="text-muted-foreground mt-1">
             Here's an overview of your mental wellness journey.
           </p>
         </div>
         <Link href="/check-in">
-          <Button size="lg" className="rounded-full shadow-lg hover:shadow-primary/25">
+          <Button
+            size="lg"
+            className="rounded-full shadow-lg hover:shadow-primary/25"
+          >
             <Plus className="w-5 h-5 mr-2" /> New Check-In
           </Button>
         </Link>
@@ -56,7 +63,6 @@ export default function Dashboard() {
       <div className="grid lg:grid-cols-3 gap-8">
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-8">
-          
           {/* Mood Trend Chart */}
           <Card className="border-none shadow-md bg-white/60 backdrop-blur">
             <CardHeader>
@@ -70,29 +76,43 @@ export default function Dashboard() {
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={chartData}>
                     <defs>
-                      <linearGradient id="lineColor" x1="0" y1="0" x2="1" y2="0">
+                      <linearGradient
+                        id="lineColor"
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
                         <stop offset="0%" stopColor="#0ea5e9" />
                         <stop offset="100%" stopColor="#8b5cf6" />
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-                    <XAxis 
-                      dataKey="date" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{ fill: '#64748b', fontSize: 12 }}
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#e2e8f0"
+                    />
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: "#64748b", fontSize: 12 }}
                       dy={10}
                     />
                     <YAxis hide domain={[-1, 1]} />
-                    <Tooltip 
-                      contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: "12px",
+                        border: "none",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      }}
                     />
-                    <Line 
-                      type="monotone" 
-                      dataKey="score" 
-                      stroke="url(#lineColor)" 
+                    <Line
+                      type="monotone"
+                      dataKey="score"
+                      stroke="url(#lineColor)"
                       strokeWidth={3}
-                      dot={{ fill: 'white', strokeWidth: 2, r: 4 }}
+                      dot={{ fill: "white", strokeWidth: 2, r: 4 }}
                       activeDot={{ r: 6 }}
                     />
                   </LineChart>
@@ -100,7 +120,9 @@ export default function Dashboard() {
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-muted-foreground bg-slate-50/50 rounded-xl border border-dashed">
                   <p>Not enough data yet.</p>
-                  <p className="text-sm">Complete a few check-ins to see your trends!</p>
+                  <p className="text-sm">
+                    Complete a few check-ins to see your trends!
+                  </p>
                 </div>
               )}
             </CardContent>
@@ -111,8 +133,11 @@ export default function Dashboard() {
             <h2 className="text-xl font-bold font-display">Recent Entries</h2>
             {isLoading ? (
               <div className="space-y-4">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="h-24 bg-slate-100 rounded-2xl animate-pulse" />
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="h-24 bg-slate-100 rounded-2xl animate-pulse"
+                  />
                 ))}
               </div>
             ) : moods?.length === 0 ? (
@@ -124,7 +149,10 @@ export default function Dashboard() {
               </Card>
             ) : (
               moods?.map((mood) => (
-                <Card key={mood.id} className="group hover:border-primary/30 transition-colors">
+                <Card
+                  key={mood.id}
+                  className="group hover:border-primary/30 transition-colors"
+                >
                   <CardContent className="p-6">
                     <div className="flex justify-between items-start mb-3">
                       <div className="flex items-center gap-3">
@@ -134,7 +162,9 @@ export default function Dashboard() {
                         </span>
                       </div>
                     </div>
-                    <p className="text-foreground/80 line-clamp-2">{mood.text}</p>
+                    <p className="text-foreground/80 line-clamp-2">
+                      {mood.text}
+                    </p>
                   </CardContent>
                 </Card>
               ))
@@ -156,10 +186,16 @@ export default function Dashboard() {
                 If you're in crisis, confidential support is available 24/7.
               </p>
               <div className="grid gap-2">
-                <Button variant="secondary" className="w-full justify-start text-primary font-semibold">
+                <Button
+                  variant="secondary"
+                  className="w-full justify-start text-primary font-semibold"
+                >
                   Campus Police: 555-0123
                 </Button>
-                <Button variant="glass" className="w-full justify-start font-semibold">
+                <Button
+                  variant="glass"
+                  className="w-full justify-start font-semibold"
+                >
                   Crisis Line: 988
                 </Button>
               </div>
@@ -172,20 +208,20 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent className="p-0">
               <div className="divide-y">
-                <ResourceItem 
-                  icon={Users} 
-                  title="Counseling Center" 
-                  desc="Book an appointment" 
+                <ResourceItem
+                  icon={Users}
+                  title="Counseling Center"
+                  desc="Book an appointment"
                 />
-                <ResourceItem 
-                  icon={BookOpen} 
-                  title="Self-Help Library" 
-                  desc="Articles & guides" 
+                <ResourceItem
+                  icon={BookOpen}
+                  title="Self-Help Library"
+                  desc="Articles & guides"
                 />
-                <ResourceItem 
-                  icon={Activity} 
-                  title="Wellness Workshops" 
-                  desc="Join group sessions" 
+                <ResourceItem
+                  icon={Activity}
+                  title="Wellness Workshops"
+                  desc="Join group sessions"
                 />
               </div>
             </CardContent>
@@ -196,7 +232,15 @@ export default function Dashboard() {
   );
 }
 
-function ResourceItem({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+function ResourceItem({
+  icon: Icon,
+  title,
+  desc,
+}: {
+  icon: any;
+  title: string;
+  desc: string;
+}) {
   return (
     <button className="w-full p-4 flex items-center justify-between hover:bg-slate-50 transition-colors text-left group">
       <div className="flex items-center gap-4">
