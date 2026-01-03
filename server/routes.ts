@@ -15,41 +15,17 @@ export async function registerRoutes(
     try {
       const { text } = api.analyze.input.parse(req.body);
 
-      // Call Google Natural Language API
-      // Requires GOOGLE_NLP_API_KEY env var
-      const apiKey = process.env.GOOGLE_NLP_API_KEY;
-      
-      let sentimentData = { score: 0, magnitude: 0 };
-
-      if (apiKey) {
-        try {
-          const googleResponse = await axios.post(
-            `https://language.googleapis.com/v1/documents:analyzeSentiment?key=${apiKey}`,
-            {
-              document: {
-                type: 'PLAIN_TEXT',
-                content: text,
-              },
-              encodingType: 'UTF8',
-            }
-          );
-          sentimentData = googleResponse.data.documentSentiment;
-        } catch (error) {
-          console.error("Google NLP API Error:", error);
-          // Fallback if API fails or quota exceeded
-          // Mock simple analysis for demo purposes if API fails
-          sentimentData = mockSentimentAnalysis(text);
-        }
-      } else {
-        console.warn("No GOOGLE_NLP_API_KEY provided. Using mock analysis.");
-        sentimentData = mockSentimentAnalysis(text);
-      }
+      // Enhanced demo sentiment analysis logic
+      const sentimentData = simulateSentimentAnalysis(text);
 
       const { score, magnitude } = sentimentData;
       
       // Determine emotion category based on score/magnitude
       const emotion = determineEmotion(score, magnitude);
       const suggestion = getSuggestion(emotion);
+
+      // Artificial delay to simulate API processing
+      await new Promise(resolve => setTimeout(resolve, 800));
 
       res.json({
         score,
@@ -73,31 +49,66 @@ export async function registerRoutes(
   return httpServer;
 }
 
-function mockSentimentAnalysis(text: string) {
-  // Simple keyword-based mock
-  const positiveWords = ['happy', 'good', 'great', 'calm', 'excellent', 'joy'];
-  const negativeWords = ['sad', 'bad', 'stressed', 'anxious', 'overwhelmed', 'angry'];
-  
+/**
+ * Simulates Google Natural Language API sentiment analysis.
+ * Structure matches the actual API for future replacement.
+ */
+function simulateSentimentAnalysis(text: string) {
   const lowerText = text.toLowerCase();
+  
+  // Scoring rules
+  const positive = ['happy', 'good', 'great', 'calm', 'excellent', 'joy', 'excited', 'peace', 'wonderful', 'better'];
+  const negative = ['sad', 'bad', 'stressed', 'anxious', 'overwhelmed', 'angry', 'depressed', 'tired', 'worried', 'struggling'];
+  const stress = ['exam', 'deadline', 'test', 'finals', 'grade', 'pressure', 'hard', 'study', 'work'];
+
   let score = 0;
-  
-  positiveWords.forEach(w => { if (lowerText.includes(w)) score += 0.4; });
-  negativeWords.forEach(w => { if (lowerText.includes(w)) score -= 0.4; });
-  
-  // Clamp between -1 and 1
+  let matches = 0;
+
+  positive.forEach(word => {
+    if (lowerText.includes(word)) {
+      score += 0.3;
+      matches++;
+    }
+  });
+
+  negative.forEach(word => {
+    if (lowerText.includes(word)) {
+      score -= 0.3;
+      matches++;
+    }
+  });
+
+  stress.forEach(word => {
+    if (lowerText.includes(word)) {
+      score -= 0.15; // Moderate negative impact
+      matches++;
+    }
+  });
+
+  // Normalize score between -1.0 and 1.0
   score = Math.max(-1, Math.min(1, score));
   
-  return { score, magnitude: Math.abs(score) };
+  // Magnitude represents strength of emotion regardless of polarity
+  const magnitude = Math.min(5, matches * 0.5);
+
+  return { score, magnitude };
 }
 
 function determineEmotion(score: number, magnitude: number): string {
-  if (score > 0.25) return "Positive";
-  if (score < -0.25) return "Negative"; // Could be "Stressed" or "Overwhelmed"
+  if (score > 0.2) return "Positive";
+  if (score < -0.2) {
+    if (magnitude > 1.5) return "Overwhelmed";
+    return "Negative";
+  }
   return "Neutral";
 }
 
 function getSuggestion(emotion: string): string {
-  if (emotion === "Negative") return "It sounds like things are tough. Consider taking a deep breath or talking to a friend.";
-  if (emotion === "Positive") return "That's great! Keep up the good vibes.";
-  return "Stay balanced and take care of yourself.";
+  const suggestions = {
+    "Positive": "It's wonderful that you're feeling good! Try to carry this positive energy throughout your day and perhaps share a kind word with someone else.",
+    "Negative": "It's okay to have tough days. Remember to be kind to yourself. Taking a short walk or practicing five minutes of deep breathing might help clear your mind.",
+    "Overwhelmed": "When everything feels like too much, try to focus on just the next small step. Don't hesitate to reach out to campus wellbeing services—they're here to support you.",
+    "Neutral": "Finding balance is a great state to be in. Take this calm moment to plan your day or simply enjoy the present."
+  };
+  return suggestions[emotion as keyof typeof suggestions] || "Thank you for checking in. Remember that your wellbeing is a priority.";
 }
