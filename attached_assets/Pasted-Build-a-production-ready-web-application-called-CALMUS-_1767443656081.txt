@@ -1,0 +1,117 @@
+Build a production-ready web application called CALMUS, a campus-based student wellbeing platform.
+
+🎯 Purpose
+
+The website allows students to securely log in, enter short mood or stress reflections, analyzes emotional tone using Google Natural Language API, and provides supportive insights along with relevant campus academic and wellbeing resources.
+
+🧠 Tech Stack Requirements
+Frontend
+
+– Modern responsive web interface (React preferred, or HTML/CSS/JavaScript)
+– Clean, minimal, student-friendly UI
+– Calm color palette (blue, green, white)
+
+Backend & Cloud
+
+– Firebase (Google Cloud Platform)
+• Firebase Authentication (Email/Password + Guest mode)
+• Firestore Database
+• Firebase Hosting
+– Google Cloud Services for secure API handling
+
+AI Integration
+
+– Google Natural Language API
+• Sentiment analysis on user-entered text
+• Extract sentiment score and emotional tone
+
+🔐 Authentication & User Management
+Login / Signup Page
+
+– Email & password login
+– Optional guest login
+– Form validation and error handling
+
+Cloud Storage of User Data
+
+– Store user details securely in Firebase Authentication
+– Link user UID to Firestore records
+– All data stored in cloud (no local storage for sensitive data)
+
+📄 Core Pages & Flow
+1️⃣ Landing Page
+
+– Project name: CALMUS
+– Tagline: Campus-based emotional awareness & support platform
+– “Login / Start Check-In” button
+
+2️⃣ Login / Signup Page
+
+– Email & password fields
+– Guest login option
+– Redirect authenticated users to dashboard
+
+3️⃣ Mood Check-In Page
+
+– Text input: “How are you feeling today?”
+– Submit button
+– Empty-input validation
+
+4️⃣ AI Processing Flow
+
+– On submit:
+→ Send text securely to backend
+→ Call Google Natural Language API
+→ Retrieve sentiment score (positive / neutral / negative)
+
+5️⃣ Results / Dashboard
+
+– Display:
+• Emotional tone (calm, stressed, overwhelmed, neutral)
+• Short supportive message (non-medical, non-judgmental)
+– Show relevant campus academic and wellbeing resources
+
+🗄️ Data Storage (Firestore)
+
+Store the following in Firebase Firestore:
+– User ID (UID)
+– Timestamp
+– Mood text
+– Sentiment score
+– Emotion category
+
+Data must be anonymized and securely stored.
+
+🏗️ System Architecture
+
+– Client-side web UI → Firebase backend
+– Backend → Google Natural Language API (secure server-side call)
+– Firestore stores user data and sentiment analysis
+– Results returned to frontend dashboard
+
+🎨 UI & UX Guidelines
+
+– Rounded cards
+– Soft shadows
+– Large readable fonts
+– Emotion icons
+– Calm, supportive language
+– No medical diagnosis or clinical terms
+
+⚙️ Non-Functional Requirements
+
+– Fast response time
+– Secure API key handling (never expose keys in frontend)
+– Scalable architecture
+– Suitable for campus-wide deployment
+
+📦 Deliverables
+
+– Fully functional website
+– Clean, modular folder structure
+– Complete source code pushed to a public GitHub repository
+– Ready for Firebase Hosting deployment
+– Clear README explaining setup, API keys, and deployment steps
+
+Build this as a real, usable web application, not a mockup or demo-only MVP.
+Ensure Google technologies (Firebase + Google Natural Language API) are clearly implemented and functional.
