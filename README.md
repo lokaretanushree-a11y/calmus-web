@@ -1,39 +1,96 @@
-# CALMUS - Student Wellbeing Platform
+# 🌱 CALMUS  
+### A Student Mental Wellbeing Companion
 
-CALMUS is a campus-based student wellbeing platform that allows students to check in with their mood, receive AI-powered sentiment analysis, and access supportive resources.
+*Built for students. Designed for care. Powered by simplicity.*
 
-## Features
+---
 
-- **Authentication**: Secure login/signup using Firebase Authentication (Email/Password + Guest).
-- **Mood Check-In**: Students can log their thoughts and feelings.
-- **AI Analysis**: Sentiment analysis using Google Natural Language API to determine emotional tone.
-- **Dashboard**: View past mood entries and access campus resources.
-- **Privacy**: User data is securely stored in Firebase Firestore.
+## 🏆 Hackathon Problem Statement
 
-## Setup Instructions
+College students face increasing academic pressure, emotional stress, and limited access to mental health support. Many students struggle silently due to stigma, lack of awareness, or absence of immediate, approachable tools.
 
-### 1. Firebase Setup
-1. Go to the [Firebase Console](https://console.firebase.google.com/).
-2. Create a new project.
-3. **Authentication**: Enable "Email/Password" and "Anonymous" (Guest) sign-in providers.
-4. **Firestore**: Create a Firestore database (start in Test Mode for development).
-5. **Web App**: Register a web app in your project settings to get your configuration.
+**CALMUS** addresses this gap by providing a safe, private, and intuitive platform for students to reflect on their emotions, track wellbeing trends, and receive supportive guidance.
 
-### 2. Google Natural Language API
-1. In the Google Cloud Console (linked to your Firebase project), enable the **Cloud Natural Language API**.
-2. Create an API Key in "APIs & Services > Credentials".
+---
 
-### 3. Environment Variables (Replit Secrets)
-Add the following secrets to your Replit environment (Tools > Secrets):
+## 💡 Our Solution
 
-| Secret | Description |
-|--------|-------------|
-| `VITE_FIREBASE_API_KEY` | Your Firebase Web API Key |
-| `VITE_FIREBASE_PROJECT_ID` | Your Firebase Project ID |
-| `VITE_FIREBASE_APP_ID` | Your Firebase App ID |
-| `GOOGLE_NLP_API_KEY` | Your Google Cloud API Key for NLP |
+CALMUS enables students to:
 
-## Tech Stack
-- **Frontend**: React, Vite, TailwindCSS, Shadcn UI
-- **Backend**: Node.js/Express (for NLP proxy), Firebase (Auth/Data)
-- **AI**: Google Cloud Natural Language API
+- Express how they feel through daily check-ins  
+- Receive emotion-aware suggestions instantly  
+- Visualize mood patterns over time  
+- Access campus wellness resources easily  
+
+The MVP focuses on **early emotional awareness**, helping students recognize when they may need rest, support, or professional help.
+
+---
+
+## ✨ Key Features
+
+### 🧠 Emotion-Based Check-In  
+Students write freely about their day; the app detects emotional tone using rule-based sentiment logic.
+
+### 💬 Supportive Suggestions  
+Each emotion triggers practical, student-friendly wellbeing advice.
+
+### 📊 Mood Trend Visualization  
+Interactive charts help users understand emotional patterns over time.
+
+### 📓 Recent Reflections  
+View past check-ins to encourage self-awareness and reflection.
+
+### 🏫 Campus Support Access  
+Emergency and wellness resources displayed clearly.
+
+### 🔒 Privacy-Focused MVP  
+No personal data stored online; uses local storage for demo safety.
+
+---
+
+## 🛠 Tech Stack
+
+- **Frontend:** React + TypeScript  
+- **Styling:** Tailwind CSS, shadcn/ui  
+- **Routing:** Wouter  
+- **Charts:** Recharts  
+- **Icons:** Lucide React  
+- **Storage:** LocalStorage (MVP)  
+- **Deployment:** Replit  
+
+---
+
+## 🚀 How to Run Locally
+
+```bash
+git clone https://github.com/your-username/calmus-web.git
+cd calmus-web
+npm install
+npm run dev
+```
+
+---
+
+## 🎯 Why CALMUS Stands Out
+
+- ✅ Low barrier to entry (no login required in MVP)  
+- ✅ Student-centric emotional design  
+- ✅ Immediate value with minimal interaction  
+- ✅ Scalable for AI, Firebase, and institutional adoption  
+- ✅ Designed with mental health sensitivity in mind  
+
+---
+
+## 🔮 Future Scope
+
+- AI-powered sentiment analysis  
+- Secure authentication & cloud storage  
+- Personalized wellness plans  
+- Counselor & admin dashboards  
+- Integration with campus mental health systems  
+
+---
+
+## ❤️ Impact Vision
+
+CALMUS aims to normalize emotional check-ins and make mental wellbeing **approachable, private, and actionable** for every student.
