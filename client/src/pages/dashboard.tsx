@@ -24,9 +24,44 @@ import {
   CartesianGrid,
 } from "recharts";
 
+const demoMoods = [
+  {
+    id: "1",
+    text: "Feeling a bit stressed about exams but trying to stay calm.",
+    sentimentScore: -0.4,
+    emotionCategory: "Stressed",
+    createdAt: new Date(),
+  },
+  {
+    id: "2",
+    text: "Had a productive day and felt really happy.",
+    sentimentScore: 0.7,
+    emotionCategory: "Happy",
+    createdAt: new Date(Date.now() - 86400000),
+  },
+  {
+    id: "3",
+    text: "Feeling neutral today, nothing much happened.",
+    sentimentScore: 0.0,
+    emotionCategory: "Neutral",
+    createdAt: new Date(Date.now() - 2 * 86400000),
+  },
+];
+
 export default function Dashboard() {
-  const { user } = useAuth();
-  const { data: moods, isLoading } = useMoodHistory(user?.uid);
+  const user = {
+    uid: "demo-user",
+    displayName: "Student",
+  };
+
+  const storedMood = localStorage.getItem("latestMood");
+  const latestMood = storedMood ? JSON.parse(storedMood) : null;
+
+  // rest of your hooks / logic
+
+  // Use demo data if Firebase is unavailable
+  const moods = demoMoods;
+  const isLoading = false;
 
   // Prepare chart data (last 7 entries reversed for chronological order)
   const chartData = moods
@@ -61,6 +96,37 @@ export default function Dashboard() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-8">
+        {/* Latest Check-In Result */}
+        {latestMood && (
+          <Card className="lg:col-span-3 border-2 border-primary shadow-lg bg-white">
+            <CardHeader>
+              <CardTitle>Your Latest Check-In</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <p className="text-sm text-muted-foreground">
+                  Detected Emotion
+                </p>
+                <p className="text-xl font-bold text-primary">
+                  {latestMood.emotion}
+                </p>
+              </div>
+
+              <div>
+                <p className="text-sm text-muted-foreground">What you wrote</p>
+                <p className="italic">{latestMood.text}</p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-slate-50 border">
+                <p className="font-semibold mb-1">Suggested Action</p>
+                <p className="text-sm text-muted-foreground">
+                  {latestMood.suggestion}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Main Content Area */}
         <div className="lg:col-span-2 space-y-8">
           {/* Mood Trend Chart */}
